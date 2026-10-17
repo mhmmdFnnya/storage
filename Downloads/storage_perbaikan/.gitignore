@@ -1,4 +1,4 @@
 .env
 seed/accounts.env
-cloudflared.deb
 __pycache__/
+*.pyc

@@ -3,16 +3,15 @@ set -e
 cd /var/www/html
 source /seed/accounts.env
 
-# 1. Pemasangan Groupfolders Kompatibel (v20.0.0)
-if [ ! -d /var/www/html/apps/groupfolders ]; then
-  echo "Mengunduh modul groupfolders v20.0.0..."
-  rm -f /tmp/groupfolders.tar.gz
-  curl -L -o /tmp/groupfolders.tar.gz https://github.com/nextcloud-releases/groupfolders/releases/download/v20.0.0/groupfolders-v20.0.0.tar.gz
-  tar -xzf /tmp/groupfolders.tar.gz -C /var/www/html/apps/
+# 1. Pemasangan Groupfolders v22.0.6 (Resmi untuk Nextcloud 34)
+if ! php occ app:enable groupfolders >/dev/null 2>&1; then
+  echo "Memasang modul groupfolders v22.0.6..."
+  rm -f /tmp/gf.tar.gz
+  curl -L -o /tmp/gf.tar.gz https://github.com/nextcloud-releases/groupfolders/releases/download/v22.0.6/groupfolders-v22.0.6.tar.gz
+  tar -xzf /tmp/gf.tar.gz -C /var/www/html/apps/
   chown -R www-data:www-data /var/www/html/apps/groupfolders
+  php occ app:enable groupfolders
 fi
-
-php occ app:enable groupfolders || true
 
 # 2. Buat Grup
 for g in HR Marketing Finance Semua; do
@@ -56,4 +55,3 @@ else
 fi
 
 php occ groupfolders:list
-echo "SELESAI: lanjut jalankan python seed_files.py di komputer host"
